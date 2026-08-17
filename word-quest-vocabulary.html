@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Quest — 3rd Grade Vocabulary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F0DC;
+    --paper-deep:#EFE0BB;
+    --ink:#1F2A44;
+    --ocean:#2B5876;
+    --ocean-deep:#1D3E56;
+    --gold:#E8A33D;
+    --gold-deep:#C87F1F;
+    --jungle:#4E7C59;
+    --jungle-deep:#396444;
+    --coral:#D1503A;
+    --coral-deep:#AC3A28;
+    --line:#D8C79E;
+    --shadow: 0 6px 0 rgba(31,42,68,0.18);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  .wq-root{
+    font-family:'Nunito', sans-serif;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(43,88,118,0.07), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(232,163,61,0.10), transparent 45%),
+      var(--paper);
+    color:var(--ink);
+    min-height:100%;
+    padding:0 0 40px 0;
+  }
+  .wq-topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 22px;
+    border-bottom:3px solid var(--line);
+    background:var(--paper);
+  }
+  .wq-brand{display:flex;align-items:center;gap:10px;}
+  .wq-compass{
+    width:36px;height:36px;flex-shrink:0;
+    animation: spin-slow 14s linear infinite;
+  }
+  @keyframes spin-slow{ to{ transform:rotate(360deg); } }
+  .wq-title{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:22px;
+    color:var(--ocean-deep);
+    letter-spacing:0.2px;
+  }
+  .wq-title small{
+    display:block;
+    font-family:'Nunito', sans-serif;
+    font-weight:700;
+    font-size:11px;
+    color:var(--gold-deep);
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+  }
+  .wq-nav{display:flex;gap:8px;}
+  .wq-tab{
+    font-family:'Nunito', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    padding:9px 14px;
+    border-radius:10px;
+    border:2px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .wq-tab[aria-selected="true"]{
+    background:var(--ocean);
+    border-color:var(--ocean-deep);
+    color:#fff;
+  }
+  .wq-tab:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+
+  main{ max-width:1080px; margin:0 auto; padding:26px 18px; }
+  .hidden{ display:none !important; }
+
+  /* ---------- START SCREEN ---------- */
+  .start-card{
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    padding:36px 30px;
+    max-width:560px;
+    margin:24px auto;
+    text-align:center;
+  }
+  .start-card h1{
+    font-family:'Baloo 2', sans-serif;
+    font-size:28px;
+    margin:6px 0 4px;
+    color:var(--ocean-deep);
+  }
+  .start-card p.sub{ color:#5b6478; margin:0 0 22px; font-weight:600; }
+  .wq-input-label{ display:block; text-align:left; font-weight:800; font-size:13px; color:var(--ink); margin:0 0 6px; }
+  input.wq-name{
+    width:100%; padding:12px 14px; font-size:16px; font-family:'Nunito', sans-serif; font-weight:700;
+    border:2px solid var(--line); border-radius:12px; background:var(--paper); color:var(--ink);
+  }
+  input.wq-name:focus-visible{ outline:3px solid var(--gold); outline-offset:1px; }
+  .avatar-row{ display:flex; gap:10px; justify-content:center; margin:18px 0 24px; }
+  .avatar-btn{
+    width:58px; height:58px; border-radius:14px; font-size:26px;
+    border:2px solid var(--line); background:var(--paper); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .avatar-btn[aria-pressed="true"]{ background:var(--gold); border-color:var(--gold-deep); transform:translateY(-2px); box-shadow:0 4px 0 var(--gold-deep); }
+  .avatar-btn:focus-visible{ outline:3px solid var(--ocean); outline-offset:2px; }
+  .btn-primary{
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:18px;
+    background:var(--jungle); color:#fff; border:none; border-radius:14px;
+    padding:14px 26px; cursor:pointer; box-shadow:0 5px 0 var(--jungle-deep);
+  }
+  .btn-primary:active{ transform:translateY(3px); box-shadow:0 2px 0 var(--jungle-deep); }
+  .btn-primary:disabled{ opacity:0.45; cursor:not-allowed; box-shadow:0 5px 0 #9aa5a0; }
+  .btn-primary:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+
+  /* ---------- GAME SCREEN ---------- */
+  .game-grid{ display:grid; grid-template-columns:220px 1fr; gap:22px; }
+  @media (max-width:700px){ .game-grid{ grid-template-columns:1fr; } .trail-panel{ order:2; } }
+
+  .trail-panel{
+    background:#fff; border:2px solid var(--line); border-radius:18px; padding:16px;
+    box-shadow:var(--shadow);
+  }
+  .trail-panel h2{ font-family:'Baloo 2'; font-size:15px; margin:2px 0 14px; color:var(--ocean-deep); }
+  .island-stop{ display:flex; align-items:center; gap:10px; padding:8px 4px; position:relative; }
+  .island-stop:not(:last-child)::after{
+    content:""; position:absolute; left:19px; top:38px; width:2px; height:22px;
+    background:repeating-linear-gradient(to bottom, var(--line) 0 5px, transparent 5px 10px);
+  }
+  .island-dot{
+    width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:17px; border:2px solid var(--line); background:var(--paper); flex-shrink:0;
+  }
+  .island-dot.done{ background:var(--jungle); border-color:var(--jungle-deep); color:#fff; }
+  .island-dot.active{ background:var(--gold); border-color:var(--gold-deep); }
+  .island-label{ font-weight:800; font-size:13px; }
+  .island-label small{ display:block; font-weight:700; color:#7a8296; font-size:11px; }
+
+  .score-strip{
+    display:flex; gap:10px; margin-top:16px; padding-top:14px; border-top:2px dashed var(--line);
+  }
+  .chip{
+    flex:1; text-align:center; background:var(--paper); border:2px solid var(--line); border-radius:10px; padding:8px 4px;
+  }
+  .chip .n{ font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:17px; color:var(--ocean-deep); }
+  .chip .l{ font-size:10px; font-weight:800; letter-spacing:0.5px; color:#7a8296; text-transform:uppercase; }
+
+  .question-card{
+    background:#fff; border:2px solid var(--line); border-radius:20px; padding:30px; box-shadow:var(--shadow);
+  }
+  .q-eyebrow{ font-weight:800; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--gold-deep); margin:0 0 6px; }
+  .q-word{ font-family:'Baloo 2'; font-size:38px; color:var(--ocean-deep); margin:0 0 22px; }
+  .choices{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:520px){ .choices{ grid-template-columns:1fr; } }
+  .choice-btn{
+    text-align:left; font-family:'Nunito'; font-weight:700; font-size:15px; line-height:1.35;
+    padding:14px 16px; border-radius:12px; border:2px solid var(--line); background:var(--paper);
+    cursor:pointer;
+  }
+  .choice-btn:hover:not(:disabled){ background:var(--paper-deep); }
+  .choice-btn:focus-visible{ outline:3px solid var(--ocean); outline-offset:2px; }
+  .choice-btn.correct{ background:var(--jungle); border-color:var(--jungle-deep); color:#fff; }
+  .choice-btn.incorrect{ background:var(--coral); border-color:var(--coral-deep); color:#fff; }
+  .choice-btn:disabled{ cursor:default; }
+
+  .feedback-row{ display:flex; align-items:center; justify-content:space-between; margin-top:20px; min-height:44px; }
+  .feedback-msg{ font-weight:800; font-size:15px; }
+  .feedback-msg.good{ color:var(--jungle-deep); }
+  .feedback-msg.bad{ color:var(--coral-deep); }
+  .btn-continue{
+    font-family:'Baloo 2'; font-weight:700; font-size:15px; background:var(--ocean); color:#fff;
+    border:none; border-radius:12px; padding:10px 20px; cursor:pointer; box-shadow:0 4px 0 var(--ocean-deep);
+  }
+  .btn-continue:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+
+  /* ---------- MODAL (island / final) ---------- */
+  .wq-overlay{
+    position:fixed; inset:0; background:rgba(31,42,68,0.55); display:flex; align-items:center; justify-content:center; padding:20px; z-index:20;
+  }
+  .wq-modal{
+    background:#fff; border-radius:22px; padding:34px; max-width:440px; width:100%; text-align:center;
+    border:2px solid var(--line); box-shadow:0 14px 0 rgba(31,42,68,0.18);
+  }
+  .badge-icon{ font-size:56px; display:block; margin-bottom:8px; }
+  .wq-modal h2{ font-family:'Baloo 2'; font-size:24px; color:var(--ocean-deep); margin:4px 0 6px; }
+  .wq-modal p{ color:#5b6478; font-weight:600; margin:0 0 22px; }
+
+  /* ---------- TEACHER DASHBOARD ---------- */
+  .dash-head{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px; margin-bottom:16px; }
+  .dash-head h1{ font-family:'Baloo 2'; color:var(--ocean-deep); font-size:24px; margin:0; }
+  .dash-note{ font-size:12px; color:#7a8296; font-weight:700; max-width:340px; }
+  .dash-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+  @media (max-width:640px){ .dash-stats{ grid-template-columns:1fr 1fr; } }
+  .stat-card{ background:#fff; border:2px solid var(--line); border-radius:14px; padding:14px 16px; box-shadow:var(--shadow); }
+  .stat-card .v{ font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:24px; color:var(--ocean-deep); }
+  .stat-card .k{ font-size:11px; font-weight:800; color:#7a8296; text-transform:uppercase; letter-spacing:0.5px; }
+
+  .dash-panels{ display:grid; grid-template-columns:1.6fr 1fr; gap:16px; align-items:start; }
+  @media (max-width:760px){ .dash-panels{ grid-template-columns:1fr; } }
+  .panel{ background:#fff; border:2px solid var(--line); border-radius:16px; padding:18px; box-shadow:var(--shadow); }
+  .panel h3{ font-family:'Baloo 2'; font-size:16px; color:var(--ocean-deep); margin:0 0 12px; }
+  table.roster{ width:100%; border-collapse:collapse; font-size:13px; }
+  table.roster th{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.4px; color:#7a8296; padding:6px 8px; border-bottom:2px solid var(--line); }
+  table.roster td{ padding:8px; border-bottom:1px solid var(--line); font-weight:700; font-family:'IBM Plex Mono', monospace; }
+  table.roster td.name-cell{ font-family:'Nunito'; }
+  .miss-row{ display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); }
+  .miss-row:last-child{ border-bottom:none; }
+  .miss-word{ font-weight:800; font-size:13px; width:110px; flex-shrink:0; }
+  .miss-bar-track{ flex:1; background:var(--paper); border-radius:6px; height:10px; overflow:hidden; }
+  .miss-bar-fill{ height:100%; background:var(--coral); border-radius:6px; }
+  .miss-pct{ font-family:'IBM Plex Mono', monospace; font-size:12px; width:38px; text-align:right; }
+  .empty-state{ color:#7a8296; font-weight:700; font-size:13px; padding:10px 2px; }
+  .btn-ghost{
+    font-family:'Nunito'; font-weight:800; font-size:12px; background:transparent; color:var(--coral-deep);
+    border:2px solid var(--coral); border-radius:10px; padding:7px 12px; cursor:pointer; margin-top:14px;
+  }
+  .btn-refresh{
+    font-family:'Nunito'; font-weight:800; font-size:12px; background:var(--paper); color:var(--ocean-deep);
+    border:2px solid var(--line); border-radius:10px; padding:7px 12px; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+<div class="wq-root">
+
+  <div class="wq-topbar">
+    <div class="wq-brand">
+      <svg class="wq-compass" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="20" cy="20" r="17" fill="none" stroke="#2B5876" stroke-width="2.5"/>
+        <circle cx="20" cy="20" r="2.5" fill="#E8A33D"/>
+        <path d="M20 6 L23 19 L20 22 L17 19 Z" fill="#D1503A"/>
+        <path d="M20 34 L17 21 L20 18 L23 21 Z" fill="#2B5876"/>
+      </svg>
+      <div class="wq-title">Word Quest<small>Vocabulary Expedition · Grade 3</small></div>
+    </div>
+    <div class="wq-nav" role="tablist" aria-label="View">
+      <button class="wq-tab" id="tab-play" role="tab" aria-selected="true">Play</button>
+      <button class="wq-tab" id="tab-teacher" role="tab" aria-selected="false">Teacher Dashboard</button>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- START SCREEN -->
+    <section id="start-screen">
+      <div class="start-card">
+        <div style="font-size:40px;">🗺️</div>
+        <h1>Chart your course through 20 words</h1>
+        <p class="sub">Answer questions, earn points, and unlock four islands on the way to Summit Ridge.</p>
+        <label class="wq-input-label" for="name-input">What's your name, explorer?</label>
+        <input class="wq-name" id="name-input" maxlength="24" placeholder="Type your name" autocomplete="off">
+        <div style="margin-top:20px;">
+          <label class="wq-input-label" style="text-align:center;">Pick your expedition badge</label>
+          <div class="avatar-row" id="avatar-row">
+            <button class="avatar-btn" data-avatar="🧭" aria-pressed="true">🧭</button>
+            <button class="avatar-btn" data-avatar="🗺️" aria-pressed="false">🗺️</button>
+            <button class="avatar-btn" data-avatar="⛵" aria-pressed="false">⛵</button>
+            <button class="avatar-btn" data-avatar="🏔️" aria-pressed="false">🏔️</button>
+          </div>
+        </div>
+        <button class="btn-primary" id="begin-btn" disabled>Begin the Quest →</button>
+      </div>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section id="game-screen" class="hidden">
+      <div class="game-grid">
+        <div class="trail-panel">
+          <h2>Your Trail</h2>
+          <div id="trail-list"></div>
+          <div class="score-strip">
+            <div class="chip"><div class="n" id="chip-points">0</div><div class="l">Points</div></div>
+            <div class="chip"><div class="n" id="chip-streak">0</div><div class="l">Streak</div></div>
+          </div>
+        </div>
+        <div class="question-card">
+          <p class="q-eyebrow" id="q-progress">Word 1 of 20 · Base Camp</p>
+          <h2 class="q-word" id="q-word">enormous</h2>
+          <div class="choices" id="choices-list"></div>
+          <div class="feedback-row">
+            <div class="feedback-msg" id="feedback-msg"></div>
+            <button class="btn-continue hidden" id="continue-btn">Continue Journey →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEACHER DASHBOARD -->
+    <section id="teacher-screen" class="hidden">
+      <div class="dash-head">
+        <h1>Class Progress</h1>
+        <p class="dash-note">Shows results from everyone who has played this activity. Data is shared across all students using this page.</p>
+      </div>
+      <div class="dash-stats" id="dash-stats"></div>
+      <div class="dash-panels">
+        <div class="panel">
+          <h3>Roster</h3>
+          <table class="roster">
+            <thead><tr><th>Explorer</th><th>Furthest Island</th><th>Points</th><th>Accuracy</th><th>Last Played</th></tr></thead>
+            <tbody id="roster-body"></tbody>
+          </table>
+          <div id="roster-empty" class="empty-state hidden">No students have played yet. Once they finish a round, results appear here automatically.</div>
+        </div>
+        <div class="panel">
+          <h3>Words to Reteach</h3>
+          <div id="miss-list"></div>
+          <div id="miss-empty" class="empty-state hidden">Not enough data yet.</div>
+          <button class="btn-refresh" id="refresh-btn" style="margin-top:14px;">Refresh data</button>
+          <br>
+          <button class="btn-ghost" id="reset-btn">Reset all class data</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  const WORDS = [
+    {w:"enormous", def:"extremely large in size", island:0},
+    {w:"curious", def:"eager to learn or find out about something", island:0},
+    {w:"glisten", def:"to shine with a soft, sparkling light", island:0},
+    {w:"delighted", def:"feeling very happy and pleased", island:0},
+    {w:"gigantic", def:"unusually large; huge", island:0},
+    {w:"stubborn", def:"refusing to change your mind or give in", island:1},
+    {w:"cautious", def:"careful to avoid danger or mistakes", island:1},
+    {w:"furious", def:"extremely angry", island:1},
+    {w:"nervous", def:"worried or afraid about what might happen", island:1},
+    {w:"clever", def:"quick to understand and find smart solutions", island:1},
+    {w:"ancient", def:"belonging to a time long, long ago", island:2},
+    {w:"generous", def:"willing to give and share freely", island:2},
+    {w:"exhausted", def:"extremely tired; worn out", island:2},
+    {w:"mischievous", def:"playfully naughty, causing harmless trouble", island:2},
+    {w:"astonished", def:"greatly surprised or amazed", island:2},
+    {w:"reluctant", def:"unwilling and hesitant to do something", island:3},
+    {w:"vanish", def:"to disappear suddenly and completely", island:3},
+    {w:"fragile", def:"easily broken or damaged", island:3},
+    {w:"timid", def:"shy and lacking courage", island:3},
+    {w:"triumphant", def:"feeling joyful after winning or succeeding", island:3},
+  ];
+  const ISLANDS = [
+    {name:"Base Camp", icon:"⛺"},
+    {name:"Jungle Trail", icon:"🌿"},
+    {name:"Mountain Pass", icon:"⛰️"},
+    {name:"Summit Ridge", icon:"🏁"},
+  ];
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  // Build session order: shuffle within each island, keep islands in order
+  function buildOrder(){
+    let order = [];
+    for(let isl=0; isl<4; isl++){
+      const idxs = WORDS.map((w,i)=>i).filter(i=>WORDS[i].island===isl);
+      order = order.concat(shuffle(idxs));
+    }
+    return order;
+  }
+
+  function buildChoices(wordIdx){
+    const correct = WORDS[wordIdx].def;
+    const pool = WORDS.filter((_,i)=>i!==wordIdx).map(w=>w.def);
+    const wrongs = shuffle(pool).slice(0,3);
+    return shuffle([{text:correct, correct:true}, ...wrongs.map(t=>({text:t, correct:false}))]);
+  }
+
+  const state = {
+    student: null,
+    avatar: "🧭",
+    order: [],
+    qi: 0,
+    streak: 0,
+    points: 0,
+    correctCount: 0,
+    attempted: 0,
+    perWord: {},
+    badges: [],
+    choices: [],
+    answered: false,
+  };
+
+  // ---------- DOM refs ----------
+  const startScreen = document.getElementById('start-screen');
+  const gameScreen = document.getElementById('game-screen');
+  const teacherScreen = document.getElementById('teacher-screen');
+  const tabPlay = document.getElementById('tab-play');
+  const tabTeacher = document.getElementById('tab-teacher');
+  const nameInput = document.getElementById('name-input');
+  const beginBtn = document.getElementById('begin-btn');
+  const avatarRow = document.getElementById('avatar-row');
+
+  avatarRow.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.avatar-btn');
+    if(!btn) return;
+    [...avatarRow.children].forEach(b=>b.setAttribute('aria-pressed','false'));
+    btn.setAttribute('aria-pressed','true');
+    state.avatar = btn.dataset.avatar;
+  });
+  nameInput.addEventListener('input', ()=>{
+    beginBtn.disabled = nameInput.value.trim().length === 0;
+  });
+  beginBtn.addEventListener('click', startGame);
+  nameInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !beginBtn.disabled) startGame(); });
+
+  tabPlay.addEventListener('click', ()=>switchTab('play'));
+  tabTeacher.addEventListener('click', ()=>switchTab('teacher'));
+
+  function switchTab(which){
+    const playing = which==='play';
+    tabPlay.setAttribute('aria-selected', String(playing));
+    tabTeacher.setAttribute('aria-selected', String(!playing));
+    teacherScreen.classList.toggle('hidden', playing);
+    startScreen.classList.toggle('hidden', !playing || state.student);
+    gameScreen.classList.toggle('hidden', !playing || !state.student);
+    if(!playing) loadTeacherDashboard();
+  }
+
+  function startGame(){
+    state.student = nameInput.value.trim().slice(0,24);
+    state.order = buildOrder();
+    startScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+    renderTrail();
+    renderQuestion();
+  }
+
+  // ---------- TRAIL ----------
+  function renderTrail(){
+    const currentIsland = Math.min(3, Math.floor(state.qi/5));
+    const list = document.getElementById('trail-list');
+    list.innerHTML = '';
+    ISLANDS.forEach((isl, i)=>{
+      const done = i < currentIsland;
+      const active = i === currentIsland;
+      const div = document.createElement('div');
+      div.className = 'island-stop';
+      div.innerHTML = `
+        <div class="island-dot ${done?'done':(active?'active':'')}">${done?'✓':isl.icon}</div>
+        <div class="island-label">${isl.name}<small>Words ${i*5+1}–${i*5+5}</small></div>
+      `;
+      list.appendChild(div);
+    });
+    document.getElementById('chip-points').textContent = state.points;
+    document.getElementById('chip-streak').textContent = state.streak;
+  }
+
+  // ---------- QUESTION ----------
+  function renderQuestion(){
+    if(state.qi >= state.order.length){ return showFinal(); }
+    const wordIdx = state.order[state.qi];
+    const word = WORDS[wordIdx];
+    state.choices = buildChoices(wordIdx);
+    state.answered = false;
+
+    const islandName = ISLANDS[word.island].name;
+    document.getElementById('q-progress').textContent = `Word ${state.qi+1} of 20 · ${islandName}`;
+    document.getElementById('q-word').textContent = word.w;
+    document.getElementById('feedback-msg').textContent = '';
+    document.getElementById('feedback-msg').className = 'feedback-msg';
+    const contBtn = document.getElementById('continue-btn');
+    contBtn.classList.add('hidden');
+
+    const list = document.getElementById('choices-list');
+    list.innerHTML = '';
+    state.choices.forEach((c)=>{
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.textContent = c.text;
+      btn.addEventListener('click', ()=>handleAnswer(btn, c, wordIdx));
+      list.appendChild(btn);
+    });
+    renderTrail();
+  }
+
+  function handleAnswer(btn, choice, wordIdx){
+    if(state.answered) return;
+    state.answered = true;
+    const word = WORDS[wordIdx];
+
+    state.attempted++;
+    if(!state.perWord[word.w]) state.perWord[word.w] = {attempts:0, correct:0};
+    state.perWord[word.w].attempts++;
+
+    const buttons = [...document.getElementById('choices-list').children];
+    buttons.forEach(b=>b.disabled = true);
+
+    const msg = document.getElementById('feedback-msg');
+    if(choice.correct){
+      btn.classList.add('correct');
+      state.correctCount++;
+      state.perWord[word.w].correct++;
+      state.streak++;
+      let pts = 10;
+      if(state.streak>0 && state.streak%3===0) pts += 5;
+      state.points += pts;
+      msg.textContent = state.streak%3===0 && state.streak>0 ? `Correct! +${pts} pts (streak bonus!)` : `Correct! +${pts} pts`;
+      msg.className = 'feedback-msg good';
+    } else {
+      btn.classList.add('incorrect');
+      state.streak = 0;
+      buttons.find(b=>b.textContent===word.def)?.classList.add('correct');
+      msg.textContent = `Not quite — "${word.w}" means: ${word.def}`;
+      msg.className = 'feedback-msg bad';
+    }
+    document.getElementById('continue-btn').classList.remove('hidden');
+    document.getElementById('chip-points').textContent = state.points;
+    document.getElementById('chip-streak').textContent = state.streak;
+    saveProgress();
+  }
+
+  document.getElementById('continue-btn').addEventListener('click', ()=>{
+    const prevIsland = Math.floor(state.qi/5);
+    state.qi++;
+    const nowIsland = Math.min(3, Math.floor(state.qi/5));
+    if(state.qi < state.order.length && nowIsland !== prevIsland && state.qi % 5 === 0){
+      showIslandComplete(prevIsland);
+    } else {
+      renderQuestion();
+    }
+  });
+
+  function showIslandComplete(islandIdx){
+    const isl = ISLANDS[islandIdx];
+    const overlay = document.createElement('div');
+    overlay.className = 'wq-overlay';
+    overlay.innerHTML = `
+      <div class="wq-modal">
+        <span class="badge-icon">${isl.icon}</span>
+        <h2>${isl.name} complete!</h2>
+        <p>You've earned the ${isl.name} badge. On to the next island.</p>
+        <button class="btn-primary" id="modal-continue">Keep Exploring →</button>
+      </div>`;
+    document.body.appendChild(overlay);
+    state.badges.push(isl.name);
+    overlay.querySelector('#modal-continue').addEventListener('click', ()=>{
+      overlay.remove();
+      renderQuestion();
+    });
+  }
+
+  function showFinal(){
+    const acc = state.attempted ? Math.round((state.correctCount/state.attempted)*100) : 0;
+    let tier = "Word Scout";
+    let icon = "🎒";
+    if(acc>=90){ tier="Word Master"; icon="🏆"; }
+    else if(acc>=70){ tier="Word Explorer"; icon="🧭"; }
+    state.badges.push(tier);
+
+    const overlay = document.createElement('div');
+    overlay.className = 'wq-overlay';
+    overlay.innerHTML = `
+      <div class="wq-modal">
+        <span class="badge-icon">${icon}</span>
+        <h2>Expedition complete, ${state.student}!</h2>
+        <p>${state.points} points · ${acc}% accuracy · Badge earned: <strong>${tier}</strong></p>
+        <button class="btn-primary" id="modal-close">Nice!</button>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.querySelector('#modal-close').addEventListener('click', ()=>overlay.remove());
+    saveProgress(true);
+  }
+
+  // ---------- DATA TRACKING ----------
+  async function saveProgress(finished){
+    if(!state.student) return;
+    const acc = state.attempted ? Math.round((state.correctCount/state.attempted)*100) : 0;
+    const record = {
+      name: state.student,
+      avatar: state.avatar,
+      island: Math.min(3, Math.floor(state.qi/5)),
+      islandName: ISLANDS[Math.min(3, Math.floor(state.qi/5))].name,
+      points: state.points,
+      attempted: state.attempted,
+      correct: state.correctCount,
+      accuracy: acc,
+      perWord: state.perWord,
+      badges: state.badges,
+      finished: !!finished,
+      lastPlayed: new Date().toISOString(),
+    };
+    const key = 'student:' + state.student.toLowerCase().replace(/\s+/g,'_');
+    try{
+      await window.storage.set(key, JSON.stringify(record), true);
+    }catch(err){
+      console.error('Could not save progress', err);
+    }
+  }
+
+  // ---------- TEACHER DASHBOARD ----------
+  async function loadTeacherDashboard(){
+    const statsEl = document.getElementById('dash-stats');
+    const rosterBody = document.getElementById('roster-body');
+    const rosterEmpty = document.getElementById('roster-empty');
+    const missList = document.getElementById('miss-list');
+    const missEmpty = document.getElementById('miss-empty');
+    statsEl.innerHTML = '<div class="empty-state">Loading class data…</div>';
+    rosterBody.innerHTML = '';
+    missList.innerHTML = '';
+
+    let records = [];
+    try{
+      const listing = await window.storage.list('student:', true);
+      const keys = (listing && listing.keys) || [];
+      for(const k of keys){
+        try{
+          const res = await window.storage.get(k, true);
+          if(res && res.value) records.push(JSON.parse(res.value));
+        }catch(e){ /* skip unreadable key */ }
+      }
+    }catch(err){
+      console.error('Could not load class data', err);
+    }
+
+    // Stats
+    const n = records.length;
+    const avgAcc = n ? Math.round(records.reduce((s,r)=>s+(r.accuracy||0),0)/n) : 0;
+    const avgPts = n ? Math.round(records.reduce((s,r)=>s+(r.points||0),0)/n) : 0;
+    const finishedCount = records.filter(r=>r.finished).length;
+    statsEl.innerHTML = `
+      <div class="stat-card"><div class="v">${n}</div><div class="k">Students</div></div>
+      <div class="stat-card"><div class="v">${finishedCount}</div><div class="k">Finished</div></div>
+      <div class="stat-card"><div class="v">${avgAcc}%</div><div class="k">Avg. accuracy</div></div>
+      <div class="stat-card"><div class="v">${avgPts}</div><div class="k">Avg. points</div></div>
+    `;
+
+    // Roster
+    if(n===0){
+      rosterEmpty.classList.remove('hidden');
+    } else {
+      rosterEmpty.classList.add('hidden');
+      records.sort((a,b)=> (b.points||0)-(a.points||0));
+      records.forEach(r=>{
+        const tr = document.createElement('tr');
+        const when = r.lastPlayed ? new Date(r.lastPlayed).toLocaleDateString() : '—';
+        tr.innerHTML = `
+          <td class="name-cell">${r.avatar||''} ${escapeHtml(r.name||'')}</td>
+          <td>${escapeHtml(r.islandName||'—')}</td>
+          <td>${r.points||0}</td>
+          <td>${r.accuracy||0}%</td>
+          <td>${when}</td>
+        `;
+        rosterBody.appendChild(tr);
+      });
+    }
+
+    // Most-missed words across class
+    const agg = {};
+    records.forEach(r=>{
+      const pw = r.perWord || {};
+      Object.keys(pw).forEach(w=>{
+        if(!agg[w]) agg[w] = {attempts:0, correct:0};
+        agg[w].attempts += pw[w].attempts||0;
+        agg[w].correct += pw[w].correct||0;
+      });
+    });
+    const missRows = Object.keys(agg)
+      .filter(w=>agg[w].attempts>0)
+      .map(w=>({word:w, missRate: (agg[w].attempts-agg[w].correct)/agg[w].attempts}))
+      .filter(r=>r.missRate>0)
+      .sort((a,b)=>b.missRate-a.missRate)
+      .slice(0,6);
+
+    if(missRows.length===0){
+      missEmpty.classList.remove('hidden');
+    } else {
+      missEmpty.classList.add('hidden');
+      missRows.forEach(r=>{
+        const pct = Math.round(r.missRate*100);
+        const row = document.createElement('div');
+        row.className = 'miss-row';
+        row.innerHTML = `
+          <div class="miss-word">${escapeHtml(r.word)}</div>
+          <div class="miss-bar-track"><div class="miss-bar-fill" style="width:${pct}%"></div></div>
+          <div class="miss-pct">${pct}%</div>
+        `;
+        missList.appendChild(row);
+      });
+    }
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  document.getElementById('refresh-btn').addEventListener('click', loadTeacherDashboard);
+  document.getElementById('reset-btn').addEventListener('click', async ()=>{
+    if(!confirm('Clear all saved student results for this activity? This cannot be undone.')) return;
+    try{
+      const listing = await window.storage.list('student:', true);
+      const keys = (listing && listing.keys) || [];
+      for(const k of keys){
+        try{ await window.storage.delete(k, true); }catch(e){ /* continue */ }
+      }
+      loadTeacherDashboard();
+    }catch(err){
+      console.error('Could not reset class data', err);
+      alert('Something went wrong resetting the data. Please try again.');
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
